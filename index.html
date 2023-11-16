@@ -1,15 +1,225 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>File Upload</title>
+    <title>File Upload Form</title>
+    <style>
+        /* Reset default margin, padding, and box-sizing, and set font-family */
+        body {
+    background-image: url('./images/bgimage.jpg');
+    background-size: cover; /* Adjust the background size as needed */
+    background-position: center; /* Adjust the background position as needed */
+    background-repeat: no-repeat; /* Prevent background image from repeating */
+}
+        * {
+            margin: 0;
+
+            padding: 0;
+
+            box-sizing: border-box;
+            font-family: 'poppins', sans-serif;
+
+        }
+
+        /* Style for the main container */
+        .container {
+
+            width: 100%;
+
+            height: 100vh;
+
+            
+
+            display: flex;
+
+           align-items: center;
+           justify-content: center;
+        }
+
+        /* Style for the form */
+        form {
+
+            background: #fff;
+            display: flex;
+            flex-direction: column;
+            padding: 2vw 3vw;
+            width: 60%;
+            max-width: 600px;
+            max-height: 800px;
+            border-radius: 10px;
+        }
+
+        /* Style for form header (h3) */
+        form h2, h3 {
+
+            color: rgb(134, 32, 134);
+
+            font-weight: 800;
+
+            margin-bottom: 20px;
+            text-align: center;
+
+        }
+
+       
+        /* Style for the "Send" button */
+        #send {
+
+            padding: 15px;
+            background: rgb(249, 163, 178);
+            color: #fff;
+            font-size: 18px;
+            border: 1;
+            border-color: rgb(250, 94, 154);
+            outline: none;
+            cursor: pointer;
+            width: 150px;
+            margin: 20px auto 0;
+            border-radius: 30px;
+
+        }
+
+       
+    </style>
 </head>
 <body>
-  <h1>File Upload</h1>
-  <form action="/upload" method="post" enctype="multipart/form-data">
-    <input type="file" name="files" multiple>
-    <button type="submit">Upload Files</button>
-  </form>
+    <div class="container">
+    <form enctype="multipart/form-data" action="/api" method="POST">
+        <h2>Resume Upload</h2>
+        <input type="text" name="file-name" id="name">
+        <label for="files">Choose files:</label>
+        <input type="file" name="files" id="files" multiple>
+        <button type="submit" id="send">Submit</button>
+   <br/>
+    <div id="message"></div>
+    <div id="fileList"></div>
+    <br/>
+    <a href="./job.html" ><b>Fill the application form =></b></a>
+</form>
+</div>
+    <!--<script>
+        const form = document.querySelector('form');
+        const messageDiv = document.getElementById('message');
+        const fileListDiv = document.getElementById('fileList');
+        const serverURL = window.location.origin;
+        console.log('Server URL:', serverURL);
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const name = document.getElementById("name");
+            const files = document.getElementById("files");
+            const formData = new FormData();
+
+            formData.append("name", name.value);
+            for (let i = 0; i < files.files.length; i++) {
+                formData.append("files", files.files[i]);
+            }
+
+            
+            fetch(`${serverURL}/api`, {
+                method: 'POST',
+                body: formData,
+            })
+                .then(res => res.json())
+                .then(data => {
+                    console.log(data); // Log the response data
+                    
+                    // Check for successful upload
+                    if (data.message === "File(s) uploaded successfully") {
+                        messageDiv.textContent = "Files uploaded successfully!";
+                    } else {
+                        // Check for an error message
+                        if (data.message) {
+                            messageDiv.textContent = "Error: " + data.message;
+                        } else {
+                            messageDiv.textContent = "File upload failed.";
+                        }
+                    }
+
+                    // Display the list of uploaded filenames
+                    updateFileList(data.uploadedFiles);
+                })
+                .catch(error => {
+                console.error('Error:', error);
+                  messageDiv.textContent = "error"+error;
+                });
+        });
+
+        // Function to fetch and display the list of uploaded filenames
+        function displayUploadedFiles() {
+            
+            fetch(`${serverURL}/uploaded-files`)
+                .then(res => res.json())
+                .then(data => {
+                    updateFileList(data.uploadedFiles);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    fileListDiv.textContent = "An error occurred while fetching uploaded files.";
+                });
+        }
+
+        // Function to update the file list in HTML
+        function updateFileList(uploadedFiles) {
+            fileListDiv.innerHTML = "<h3>Uploaded Files:</h3>";
+
+            uploadedFiles.forEach(filename => {
+                const deleteButton = `<button onclick="deleteFile('${filename}')">Delete</button>`;
+                fileListDiv.innerHTML += `<div>${filename} ${deleteButton}</div>`;
+            });
+        }
+
+        // Call the function when the page loads
+        displayUploadedFiles();
+
+        // Function to delete a file
+        function deleteFile(filename) {
+            
+            fetch('http://127.0.0.1:5000/delete-file/${filename}', {
+                method: 'DELETE',
+            })
+           
+                .then(res => res.json())
+                .then(data => {
+                    console.log(data);
+
+                    // Check for successful deletion
+                    if (data.message === "File deleted successfully") {
+                        messageDiv.textContent = "File deleted successfully!";
+                        // Update the file list after deletion
+                        displayUploadedFiles();
+                    } else {
+                        // Check for an error message
+                        if (data.message) {
+                            messageDiv.textContent = "Error: " + data.message;
+                        } else {
+                            messageDiv.textContent = "File deletion failed.";
+                        }
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    messageDiv.textContent = "An error occurred during file deletion.";
+                });
+        }
+    </script>-->
+    <script>
+        document.querySelector('form').addEventListener('submit', async function (event) {
+            event.preventDefault();
+    
+            const formData = new FormData(this);
+            const response = await fetch('/api', {
+                method: 'POST',
+                body: formData,
+            });
+    
+            const data = await response.json();
+            document.getElementById('message').innerText = data.message;
+    
+            // Append the script to update the file list dynamically
+            const scriptElement = document.createElement('script');
+            scriptElement.innerHTML = data.script;
+            document.body.appendChild(scriptElement);
+        });
+    </script>
+    
 </body>
 </html>
