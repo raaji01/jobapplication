@@ -96,7 +96,7 @@
     <a href="./job.html" ><b>Fill the application form =></b></a>
 </form>
 </div>
-    <!--<script>
+    <script>
         const form = document.querySelector('form');
         const messageDiv = document.getElementById('message');
         const fileListDiv = document.getElementById('fileList');
@@ -114,7 +114,7 @@
             }
 
             
-            fetch(`${serverURL}/api`, {
+            fetch('/api', {
                 method: 'POST',
                 body: formData,
             })
@@ -146,7 +146,7 @@
         // Function to fetch and display the list of uploaded filenames
         function displayUploadedFiles() {
             
-            fetch(`${serverURL}/uploaded-files`)
+            fetch('/uploaded-files')
                 .then(res => res.json())
                 .then(data => {
                     updateFileList(data.uploadedFiles);
@@ -173,7 +173,7 @@
         // Function to delete a file
         function deleteFile(filename) {
             
-            fetch('http://127.0.0.1:5000/delete-file/${filename}', {
+            fetch(`/delete-file/${filename}`, {
                 method: 'DELETE',
             })
            
@@ -200,26 +200,6 @@
                     messageDiv.textContent = "An error occurred during file deletion.";
                 });
         }
-    </script>-->
-    <script>
-        document.querySelector('form').addEventListener('submit', async function (event) {
-            event.preventDefault();
-    
-            const formData = new FormData(this);
-            const response = await fetch('/api', {
-                method: 'POST',
-                body: formData,
-            });
-    
-            const data = await response.json();
-            document.getElementById('message').innerText = data.message;
-    
-            // Append the script to update the file list dynamically
-            const scriptElement = document.createElement('script');
-            scriptElement.innerHTML = data.script;
-            document.body.appendChild(scriptElement);
-        });
     </script>
-    
 </body>
 </html>
