@@ -7,8 +7,8 @@ var app = express();
 app.use(cors()); // Allows incoming requests from any IP
 
 app.set("view engine", "ejs")
-//app.use(express.static("public"));
-//app.use('/uploads',express.static('uploads'));
+app.use(express.static("public"));
+app.use('/uploads',express.static('uploads'));
 
 // Keep track of uploaded filenames
 let uploadedFiles = [];
@@ -68,8 +68,6 @@ app.delete('/delete-file/:filename', (req, res) => {
     }
 });
 
-// ... (your existing code)
-
 app.post("/api", upload.array("files"), (req, res) => {
     console.log(req.body); // Logs form body values
     console.log(req.files); // Logs any files
@@ -78,22 +76,9 @@ app.post("/api", upload.array("files"), (req, res) => {
     if (req.fileValidationError) {
         return res.status(400).json({ message: req.fileValidationError });
     }
-    //const uploadedFiles = (req.files || []).map(file => file.originalname);
-    const uploadedFiles = req.files.map(file => file.originalname);
 
-    // Inject success message and file list into the HTML
-    //const successMessage = "File(s) uploaded successfully";
-    //const fileListHTML = uploadedFiles.map(file => `<li>${file}</li>`).join("");
-    //const script = `<script>
-      //                  document.getElementById('message').innerText = '${successMessage}';
-        //                document.getElementById('fileList').innerHTML = '<ul>${fileListHTML}</ul>';
-                  //  </script>`;
-
-   // res.json({ message: successMessage, uploadedFiles, script });
-   res.json({ message: "1" ,uploadedFiles});
+    res.json({ message: "File(s) uploaded successfully", uploadedFiles });
 });
-
-// ... (your existing code)
 
 app.listen(5000, function () {
     console.log("Server running on port 5000");

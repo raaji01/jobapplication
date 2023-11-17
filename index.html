@@ -83,10 +83,10 @@
 </head>
 <body>
     <div class="container">
-    <form enctype="multipart/form-data" action="/api" method="POST">
+    <form enctype="multipart/form-data">
         <h2>Resume Upload</h2>
         <input type="text" name="file-name" id="name">
-        <label for="files">Choose files:</label>
+        
         <input type="file" name="files" id="files" multiple>
         <button type="submit" id="send">Submit</button>
    <br/>
@@ -114,7 +114,7 @@
             }
 
             
-            fetch('/api', {
+            fetch(`${serverURL}/api`, {
                 method: 'POST',
                 body: formData,
             })
@@ -123,12 +123,12 @@
                     console.log(data); // Log the response data
                     
                     // Check for successful upload
-                    if (data.message === "1") {
+                    if (data.message === "File(s) uploaded successfully") {
                         messageDiv.textContent = "Files uploaded successfully!";
                     } else {
                         // Check for an error message
                         if (data.message) {
-                            messageDiv.textContent = "Error: " + data.message;
+                            messageDiv.textContent = "Error ";
                         } else {
                             messageDiv.textContent = "File upload failed.";
                         }
@@ -139,14 +139,14 @@
                 })
                 .catch(error => {
                 console.error('Error:', error);
-                  messageDiv.textContent = "error"+error;
+                  messageDiv.textContent = "File already exist";
                 });
         });
 
         // Function to fetch and display the list of uploaded filenames
         function displayUploadedFiles() {
             
-            fetch('/uploaded-files')
+            fetch(`${serverURL}/uploaded-files`)
                 .then(res => res.json())
                 .then(data => {
                     updateFileList(data.uploadedFiles);
@@ -173,7 +173,7 @@
         // Function to delete a file
         function deleteFile(filename) {
             
-            fetch(`/delete-file/${filename}`, {
+            fetch(`http://127.0.0.1:5000/delete-file/${filename}`, {
                 method: 'DELETE',
             })
            
